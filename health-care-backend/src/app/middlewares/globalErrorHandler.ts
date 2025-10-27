@@ -14,7 +14,7 @@ const globalErrorHandler = (err: any, req: Request, res: Response, next: NextFun
         error
     })
 
-    // next();
+    next();
 };
 
 export default globalErrorHandler;

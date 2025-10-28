@@ -11,7 +11,8 @@ const globalErrorHandler = (err: any, req: Request, res: Response, next: NextFun
     res.status(statusCode).json({
         success,
         message,
-        error
+        error,
+        path: req.originalUrl
     })
 
 };

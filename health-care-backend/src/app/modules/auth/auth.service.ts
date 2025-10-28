@@ -3,8 +3,12 @@ import { prisma } from "../../shared/prisma"
 import bcrypt from "bcryptjs"
 import jwt from 'jsonwebtoken'
 import { jwtHelper } from "../../helper/jwtHelper"
+import config from "../../../config"
 
 const login = async (payload: { email: string, password: string }) => {
+    // if (!config.jwt.access_secret || !config.jwt.refresh_secret || !config.jwt.access_expires || !config.jwt.refresh_expires) {
+    //     throw new Error('JWT configuration is incomplete.');
+    // }
     const user = await prisma.user.findUniqueOrThrow({
         where: {
             email: payload.email,
@@ -20,12 +24,12 @@ const login = async (payload: { email: string, password: string }) => {
     const accessToken = jwtHelper.generateToken({
         email: user.email,
         role: user.role
-    }, "abcd", '1hr')
+    }, config.jwt.access_secret!, config.jwt.access_expires!)
 
     const refreshToken = jwtHelper.generateToken({
         email: user.email,
         role: user.role
-    }, "abcd", '90d')
+    }, config.jwt.refresh_secret!, config.jwt.refresh_expires!)
 
     return {
         accessToken,

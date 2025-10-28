@@ -2,6 +2,9 @@ import { Request } from "express";
 import { prisma } from "../../shared/prisma";
 import bcrypt from "bcryptjs";
 import { fileUploader } from "../../helper/fileUploader";
+import config from "../../../config";
+import { transcode } from "buffer";
+import { Admin, Doctor, UserRole } from "@prisma/client";
 
 /**
  * Creates a new patient with associated user account
@@ -20,7 +23,7 @@ const createPatient = async (req: Request) => {
 
     // Hash the patient's password using bcrypt with salt rounds of 10
     // TODO: Move salt rounds to environment variable for better security
-    const hashPassword = await bcrypt.hash(req.body.password, 10)
+    const hashPassword = await bcrypt.hash(req.body.password, Number(config.bcrypt_salt_round))
 
     // Use database transaction to ensure data consistency
     // Both user and patient records must be created together or not at all
@@ -47,6 +50,69 @@ const createPatient = async (req: Request) => {
     return result;
 }
 
+const createAdmin = async (req: Request): Promise<Admin> => {
+    if (req.file) {
+        const uploadResult = await fileUploader.uploadToCloudinary(req.file)
+
+        req.body.admin.profilePhoto = uploadResult?.secure_url
+    }
+
+    const hashPassword = await bcrypt.hash(req.body.password, Number(config.bcrypt_salt_round))
+
+    const userData = {
+        email: req.body.admin.email,
+        password: hashPassword,
+        role: UserRole.ADMIN
+    }
+
+    const result = await prisma.$transaction(async (tnx) => {
+        await tnx.user.create({
+            data: userData
+        })
+
+        const createdAdminData = await tnx.admin.create({
+            data: req.body.admin
+        })
+
+        return createdAdminData;
+    });
+
+    return result;
+}
+
+const createDoctor = async (req: Request): Promise<Doctor> => {
+    if (req.file) {
+        const uploadResult = await fileUploader.uploadToCloudinary(req.file)
+
+        req.body.doctor.profilePhoto = uploadResult?.secure_url
+    }
+
+    const hashPassword = await bcrypt.hash(req.body.password, Number(config.bcrypt_salt_round))
+
+    const userData = {
+        email: req.body.doctor.email,
+        password: hashPassword,
+        role: UserRole.DOCTOR
+    }
+
+    const result = await prisma.$transaction(async (tnx) => {
+        await tnx.user.create({
+            data: userData
+        })
+
+        const createdDoctorData = await tnx.doctor.create({
+            data: req.body.doctor
+        })
+
+        return createdDoctorData;
+    });
+
+    return result;
+
+}
+
 export const UserService = {
-    createPatient
+    createPatient,
+    createAdmin,
+    createDoctor
 }

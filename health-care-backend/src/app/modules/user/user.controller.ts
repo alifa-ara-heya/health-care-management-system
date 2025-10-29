@@ -45,9 +45,9 @@ const createDoctor = catchAsync(async (req: Request, res: Response) => {
 
 // getting all users from DB
 const getAllUsersFromDB = catchAsync(async (req: Request, res: Response) => {
-    const { limit, page } = req.query;
+    const { limit, page, searchTerm, sortBy, sortOrder } = req.query;
     // console.log({ limit, page });
-    const result = await UserService.getAllUsersFromDB({ limit: Number(limit), page: Number(page) });
+    const result = await UserService.getAllUsersFromDB({ limit: Number(limit), page: Number(page), searchTerm, sortBy, sortOrder });
 
     sendResponse(res, {
         statusCode: httpStatus.OK,

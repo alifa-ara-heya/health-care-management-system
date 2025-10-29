@@ -5,6 +5,9 @@ import { UserValidation } from "./user.validation";
 
 const router = express.Router()
 
+// get all users
+router.get('/', UserController.getAllUsersFromDB)
+
 // create patient
 router.post('/create-patient',
     fileUploader.upload.single('file'),
@@ -27,14 +30,12 @@ router.post('/create-admin', fileUploader.upload.single('file'), (req: Request, 
 })
 
 // create doctor
-
 router.post('/create-doctor', fileUploader.upload.single('file'), (req: Request, res: Response, next: NextFunction) => {
     const parsedData = JSON.parse(req.body.data)
 
     req.body = UserValidation.createDoctorValidationSchema.parse(parsedData)
     return UserController.createDoctor(req, res, next)
 })
-
 
 
 export const userRoutes = router;

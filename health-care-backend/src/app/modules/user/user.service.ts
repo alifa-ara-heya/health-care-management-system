@@ -3,7 +3,6 @@ import { prisma } from "../../shared/prisma";
 import bcrypt from "bcryptjs";
 import { fileUploader } from "../../helper/fileUploader";
 import config from "../../../config";
-import { transcode } from "buffer";
 import { Admin, Doctor, UserRole } from "@prisma/client";
 
 /**
@@ -50,6 +49,7 @@ const createPatient = async (req: Request) => {
     return result;
 }
 
+// creating admin
 const createAdmin = async (req: Request): Promise<Admin> => {
     if (req.file) {
         const uploadResult = await fileUploader.uploadToCloudinary(req.file)
@@ -80,6 +80,7 @@ const createAdmin = async (req: Request): Promise<Admin> => {
     return result;
 }
 
+// creating doctor
 const createDoctor = async (req: Request): Promise<Doctor> => {
     if (req.file) {
         const uploadResult = await fileUploader.uploadToCloudinary(req.file)
@@ -111,8 +112,20 @@ const createDoctor = async (req: Request): Promise<Doctor> => {
 
 }
 
+
+const getAllUsersFromDB = async ({ limit, page }: { limit: number, page: number }) => {
+
+    const skip = (page - 1) * limit;
+    const result = await prisma.user.findMany({
+        skip,
+        take: limit
+    });
+    return result
+}
+
 export const UserService = {
     createPatient,
     createAdmin,
-    createDoctor
+    createDoctor,
+    getAllUsersFromDB
 }

@@ -4,6 +4,8 @@ import { UserService } from "./user.service";
 import sendResponse from "../../shared/sendResponse";
 import httpStatus from 'http-status'
 
+
+// create patient
 const createPatient = catchAsync(async (req: Request, res: Response) => {
     // console.log("Patient: ", req.body);
     const result = await UserService.createPatient(req)
@@ -28,6 +30,7 @@ const createAdmin = catchAsync(async (req: Request, res: Response) => {
     })
 })
 
+// creating doctor
 const createDoctor = catchAsync(async (req: Request, res: Response) => {
     const result = await UserService.createDoctor(req);
 
@@ -39,8 +42,25 @@ const createDoctor = catchAsync(async (req: Request, res: Response) => {
     })
 })
 
+
+// getting all users from DB
+const getAllUsersFromDB = catchAsync(async (req: Request, res: Response) => {
+    const { limit, page } = req.query;
+    // console.log({ limit, page });
+    const result = await UserService.getAllUsersFromDB({ limit: Number(limit), page: Number(page) });
+
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "All users retrieved successfully!",
+        data: result
+    })
+})
+
+
 export const UserController = {
     createPatient,
     createAdmin,
-    createDoctor
+    createDoctor,
+    getAllUsersFromDB
 }

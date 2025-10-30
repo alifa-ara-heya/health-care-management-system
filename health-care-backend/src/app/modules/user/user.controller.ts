@@ -48,7 +48,7 @@ const createDoctor = catchAsync(async (req: Request, res: Response) => {
 const getAllUsersFromDB = catchAsync(async (req: Request, res: Response) => {
     // page, limit, sortBy, sortOrder - pagination, sorting
     // fields, searchTerm - searching, filtering
-    const filters = pick(req.query, ["status", "role", "email"])
+    const filters = pick(req.query, ["status", "role", "email", "searchTerm"])
 
     const options = pick(req.query, ["page", "limit", "sortBy", "sortOrder"])
 

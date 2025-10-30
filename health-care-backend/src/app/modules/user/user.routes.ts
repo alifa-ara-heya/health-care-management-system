@@ -2,11 +2,15 @@ import express, { NextFunction, Request, Response } from "express";
 import { UserController } from "./user.controller";
 import { fileUploader } from "../../helper/fileUploader";
 import { UserValidation } from "./user.validation";
+import { auth } from "../../middlewares/auth";
+import { UserRole } from "@prisma/client";
 
 const router = express.Router()
 
 // get all users
-router.get('/', UserController.getAllUsersFromDB)
+router.get('/',
+    auth(UserRole.ADMIN),
+    UserController.getAllUsersFromDB)
 
 // create patient
 router.post('/create-patient',
@@ -22,20 +26,23 @@ router.post('/create-patient',
     })
 
 // create admin
-router.post('/create-admin', fileUploader.upload.single('file'), (req: Request, res: Response, next: NextFunction) => {
+router.post('/create-admin',
+    auth(UserRole.ADMIN),
+    fileUploader.upload.single('file'), (req: Request, res: Response, next: NextFunction) => {
 
-    const parsedData = JSON.parse(req.body.data)
-    req.body = UserValidation.createAdminValidationSchema.parse(parsedData)
-    return UserController.createAdmin(req, res, next)
-})
+        const parsedData = JSON.parse(req.body.data)
+        req.body = UserValidation.createAdminValidationSchema.parse(parsedData)
+        return UserController.createAdmin(req, res, next)
+    })
 
 // create doctor
-router.post('/create-doctor', fileUploader.upload.single('file'), (req: Request, res: Response, next: NextFunction) => {
-    const parsedData = JSON.parse(req.body.data)
+router.post('/create-doctor',
+    auth(UserRole.ADMIN), fileUploader.upload.single('file'), (req: Request, res: Response, next: NextFunction) => {
+        const parsedData = JSON.parse(req.body.data)
 
-    req.body = UserValidation.createDoctorValidationSchema.parse(parsedData)
-    return UserController.createDoctor(req, res, next)
-})
+        req.body = UserValidation.createDoctorValidationSchema.parse(parsedData)
+        return UserController.createDoctor(req, res, next)
+    })
 
 
 export const userRoutes = router;

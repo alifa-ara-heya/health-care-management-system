@@ -3,6 +3,7 @@ import catchAsync from "../../shared/catchAsync";
 import { UserService } from "./user.service";
 import sendResponse from "../../shared/sendResponse";
 import httpStatus from 'http-status'
+import pick from "../../helper/pick";
 
 
 // create patient
@@ -45,9 +46,17 @@ const createDoctor = catchAsync(async (req: Request, res: Response) => {
 
 // getting all users from DB
 const getAllUsersFromDB = catchAsync(async (req: Request, res: Response) => {
-    const { limit, page, searchTerm, sortBy, sortOrder } = req.query;
+    // page, limit, sortBy, sortOrder - pagination, sorting
+    // fields, searchTerm - searching, filtering
+    const filters = pick(req.query, ["status", "role", "email"])
+
+    const options = pick(req.query, ["page", "limit", "sortBy", "sortOrder"])
+
+
+    // const { limit, page, searchTerm, sortBy, sortOrder, role, status } = req.query;
     // console.log({ limit, page });
-    const result = await UserService.getAllUsersFromDB({ limit: Number(limit), page: Number(page), searchTerm, sortBy, sortOrder });
+    // const result = await UserService.getAllUsersFromDB({ limit: Number(limit), page: Number(page), searchTerm, sortBy, sortOrder, role, status });
+    const result = await UserService.getAllUsersFromDB(filters, options);
 
     sendResponse(res, {
         statusCode: httpStatus.OK,

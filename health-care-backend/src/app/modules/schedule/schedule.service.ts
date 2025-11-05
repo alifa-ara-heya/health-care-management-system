@@ -82,7 +82,10 @@ const insertScheduleIntoDB = async (payload: any) => {
 
 // getting all schedules for a doctor with pagination
 
-const allSchedulesForADoctor = async (filters: any, options: IOptions, user: JwtPayload) => {
+const allSchedulesForADoctor = async (
+    filters: any,
+    options: IOptions,
+    user: JwtPayload) => {
     // Validate user is provided
     if (!user || !user.email) {
         throw new Error("User authentication is required");

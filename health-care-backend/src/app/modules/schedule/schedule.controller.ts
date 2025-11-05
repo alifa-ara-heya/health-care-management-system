@@ -30,7 +30,7 @@ const allSchedulesForADoctor = catchAsync(async (req: Request & { user?: IJWTPay
     sendResponse(res, {
         statusCode: httpStatus.OK,
         success: true,
-        message: "All Schedules are retrieved successfully!",
+        message: "All available  schedules are retrieved successfully!",
         data: result
     })
 })

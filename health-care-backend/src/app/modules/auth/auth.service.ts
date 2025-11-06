@@ -4,6 +4,8 @@ import bcrypt from "bcryptjs"
 import jwt from 'jsonwebtoken'
 import { jwtHelper } from "../../helper/jwtHelper"
 import config from "../../../config"
+import ApiError from "../../errors/ApiError"
+import httpStatus from "http-status"
 
 const login = async (payload: { email: string, password: string }) => {
     // if (!config.jwt.access_secret || !config.jwt.refresh_secret || !config.jwt.access_expires || !config.jwt.refresh_expires) {
@@ -18,7 +20,7 @@ const login = async (payload: { email: string, password: string }) => {
 
     const isPasswordCorrect = await bcrypt.compare(payload.password, user.password)
     if (!isPasswordCorrect) {
-        throw new Error('Password is incorrect.')
+        throw new ApiError(httpStatus.BAD_REQUEST, 'Password is incorrect.')
     }
 
     const accessToken = jwtHelper.generateToken({

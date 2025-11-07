@@ -22,7 +22,10 @@ export default {
         access_expires: process.env.JWT_ACCESS_EXPIRES,
         refresh_secret: process.env.JWT_REFRESH_SECRET,
         refresh_expires: process.env.JWT_REFRESH_EXPIRES,
-    }
+    },
+
+    // OPEN ROUTER API
+    openRouterApiKey: process.env.OPENROUTER_API_KEY
 
 
 }

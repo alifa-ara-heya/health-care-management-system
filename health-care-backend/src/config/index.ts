@@ -25,7 +25,10 @@ export default {
     },
 
     // OPEN ROUTER API
-    openRouterApiKey: process.env.OPENROUTER_API_KEY
+    openRouterApiKey: process.env.OPENROUTER_API_KEY,
+
+    // STRIPE
+    stripeSecretKey: process.env.STRIPE_SECRET_KEY
 
 
 }

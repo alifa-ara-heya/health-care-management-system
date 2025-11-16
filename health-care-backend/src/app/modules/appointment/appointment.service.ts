@@ -134,6 +134,7 @@ const getMyAppointment = async (user: IJWTPayload, filters: any, options: IOptio
         orderBy: {
             [sortBy]: sortOrder
         },
+        // if the role is patient, show doctor's details, if doctor, show patient details.
         include: user.role === UserRole.DOCTOR ?
             { patient: true } : { doctor: true }
     });

@@ -65,6 +65,11 @@ const getAllDoctorsFromDB = async (filters: any, options: IOptions) => {
                 include: {
                     specialties: true
                 }
+            },
+            reviews: {
+                select: {
+                    rating: true
+                }
             }
         }
     });
